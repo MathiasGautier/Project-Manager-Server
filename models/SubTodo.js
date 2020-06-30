@@ -14,13 +14,14 @@ const SubTodoSchema = new mongoose.Schema({
         enum:["To Do","In Progress", "Done"],
         default:"To Do",
     },
-    image :{
-        type:String
-    },
-    todo_id : {
+    todoParent_id : {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Todo",
-    }
+    },
+    workers :[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    }]
 });
 
 

@@ -17,18 +17,6 @@ const UserSchema = new mongoose.Schema({
     required: true,
     default : "user",
   },
-  todos: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Todo",
-    }
-  ],
-  subTodos: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "SubTodo",
-    }
-  ],
 });
 
 UserSchema.pre("save", function (next) {

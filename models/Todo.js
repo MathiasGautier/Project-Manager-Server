@@ -9,16 +9,9 @@ const TodoSchema = new mongoose.Schema({
         type: String,
         required : true
     },
-    image :{
-        type:String
-    },
     creator :{
         type : mongoose.Schema.Types.ObjectId, ref:"User"
-    },
-    subTodos : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "SubTodo",
-    }],
+    }
 });
 
 
