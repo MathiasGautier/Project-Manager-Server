@@ -151,6 +151,21 @@ userRouter.get("/authenticated", passport.authenticate("jwt", {
         });
     });
 
+    userRouter.get('/users', passport.authenticate
+    ("jwt",{
+        session : false
+    }),
+    (req, res) =>{
+        User
+        .find()
+        .then((userDocument)=>{
+            res.status(200).json(userDocument);
+        })
+        .catch((error)=>{
+            res.status(500).json(error);
+        })
+    }
+    )
 
 
 module.exports = userRouter;
