@@ -115,12 +115,14 @@ todoRouter.post("/subTodo", passport.authenticate("jwt", {
         const {
             name,
             description,
-            todoParent_id
+            todoParent_id,
+            workers
         } = req.body;
         const newsubTodo = new SubTodo({
             name,
             description,
-            todoParent_id
+            todoParent_id,
+            workers
         });
         newsubTodo
             .save()
