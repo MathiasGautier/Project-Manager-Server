@@ -136,21 +136,22 @@ todoRouter.post("/subTodo", passport.authenticate("jwt", {
 
 
 //GET ALL SUBTODOS
-todoRouter.get("/subTodos", passport.authenticate("jwt", {
-        session: false
-    }),
-    (req, res) => {
-        SubTodo
-            .find()
-            .populate('todoParent_id')
-            .populate('workers')
-            .then((subTodoDocument) => {
-                res.status(200).json(subTodoDocument);
-            })
-            .catch((error) => {
-                res.status(500).json(error);
-            })
-    });
+todoRouter.get("/subTodos/all", passport.authenticate("jwt", {
+    session : false
+}),
+(req,res,next)=>{
+    SubTodo
+        .find()
+        .populate('todoParent_id')
+        .populate('workers')
+        .then((subTodoDocument)=>{
+            res.status(200).json(subTodoDocument);
+        })
+        .catch((error)=>{
+            res.status(500).json(error)
+        })
+}
+)
 
 // GET ONE SUBTODO   
 todoRouter.get("/subTodos/:id", passport.authenticate("jwt", {
@@ -232,14 +233,13 @@ todoRouter.post("/comment", passport.authenticate("jwt", {
     });
 
 //GET ALL COMMENTS    
-todoRouter.get("/comments", passport.authenticate("jwt", {
+todoRouter.get("/comments/all", passport.authenticate("jwt", {
         session: false
     }),
     (req, res) => {
         Comment
             .find()
             .populate('userRef')
-            .populate('subTodoParent_id')
             .then((commentDocument) => {
                 res.status(200).json(commentDocument);
             })
