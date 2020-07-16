@@ -287,5 +287,23 @@ todoRouter.delete("/comments/:id", passport.authenticate("jwt", {
             })
     })
 
+//DELETE COMMENTS RELATED TO A SUBTODO
+todoRouter.delete('/comments/subTodos/:id', passport.authenticate("jwt",{session : false
+}),
+(req, res)=>{
+    Comment
+        .deleteMany({
+            subTodoParent_id : req.params.id
+        }, {
+            new : true
+        })
+        .then((document)=>{
+            res.status(200).json(document)
+        })
+        .catch((error)=>{
+            res.status(500).json(error)
+        })
+})
+
 
 module.exports = todoRouter;
