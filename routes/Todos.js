@@ -207,6 +207,25 @@ todoRouter.delete("/subTodos/:id", passport.authenticate("jwt", {
             })
     })
 
+//DELETE SUBTODOS RELATED TO A PROJECT
+todoRouter.delete("/subTodos/project/:id", passport.authenticate("jwt", {
+        session: false
+    }),
+    (req, res) => {
+        SubTodo
+            .deleteMany({
+                todoParent_id : req.params.id
+            }, {
+                new: true
+            })
+            .then((document) => {
+                res.status(200).json(document)
+            })
+            .catch((error) => {
+                res.status(500).json(error)
+            })
+    })    
+
 //POST A COMMENT    
 todoRouter.post("/comment", passport.authenticate("jwt", {
         session: false
@@ -215,12 +234,14 @@ todoRouter.post("/comment", passport.authenticate("jwt", {
         const userRef = req.user._id;
         const {
             text,
-            subTodoParent_id
+            subTodoParent_id,
+            toDoRef
         } = req.body;
         const newComment = new Comment({
             userRef,
             text,
-            subTodoParent_id
+            subTodoParent_id,
+            toDoRef
         });
         newComment
             .save()
@@ -305,5 +326,22 @@ todoRouter.delete('/comments/subTodos/:id', passport.authenticate("jwt",{session
         })
 })
 
+//DELETE COMMENTS RELATED TO A PROJECT
+todoRouter.delete('/comments/todo/:id', passport.authenticate("jwt",{session : false
+}),
+(req, res)=>{
+    Comment
+        .deleteMany({
+            toDoRef : req.params.id
+        }, {
+            new : true
+        })
+        .then((document)=>{
+            res.status(200).json(document)
+        })
+        .catch((error)=>{
+            res.status(500).json(error)
+        })
+})
 
 module.exports = todoRouter;

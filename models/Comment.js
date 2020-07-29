@@ -12,6 +12,10 @@ const CommentSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref:"Subtodo"
     },
+    toDoRef: {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Todo"
+    }
 });
 
 module.exports = mongoose.model('Comment', CommentSchema);
