@@ -87,6 +87,7 @@ userRouter.post("/login", passport.authenticate("local", {
             res.status(200).json({
                 isAuthenticated: true,
                 user: {
+                    _id,
                     username,
                     role
                 }
