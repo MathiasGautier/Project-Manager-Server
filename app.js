@@ -7,12 +7,15 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require("cors");
 
-app.use(
-    cors({
-      origin : process.env.FRONTEND_URL,
-      credentials:true,
-    })
-  )
+// app.use(
+//     cors({
+//       origin : process.env.FRONTEND_URL,
+//       credentials:true,
+//     })
+//   )
+
+const corsOptions = { origin: process.env.FRONTEND_URL, credentials: true };
+app.use(cors(corsOptions));
 
 app.use(logger("dev")); 
 app.use(express.urlencoded({ extended: false }));
