@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('./models/User');
 require("dotenv").config();
 
@@ -44,3 +45,15 @@ passport.use(new LocalStrategy((username, password, done) => {
         user.comparePassword(password, done);
     });
 }));
+
+// const jwtOptions = {
+//     /*
+//      * Deprecated: fromAuthHeader() - see update above
+//     jwtFromRequest: ExtractJwt.fromAuthHeader(),
+//      */
+
+//     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+//     secretOrKey: process.env.JWT_SECRET,
+// };
+
+module.export=passport;
