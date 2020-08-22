@@ -13,10 +13,15 @@ const cookieExtractor = req =>{
     return token
 }
 
+// const jwtOptions = {
+//     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+//     secretOrKey: process.env.JWT_SECRET,
+// };
+
 
 // authorization
 passport.use(new JwtStrategy({
-    jwtFromRequest : cookieExtractor,
+    jwtFromRequest : ExtractJwt.fromAuthHeaderWithScheme("jwt"),
     secretOrKey: process.env.JWT_SECRET,
 },(payload, done)=>{
     User.findById({_id : payload.sub},(err,user)=>{
@@ -46,14 +51,8 @@ passport.use(new LocalStrategy((username, password, done) => {
     });
 }));
 
-// const jwtOptions = {
-//     /*
-//      * Deprecated: fromAuthHeader() - see update above
-//     jwtFromRequest: ExtractJwt.fromAuthHeader(),
-//      */
 
-//     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
-//     secretOrKey: process.env.JWT_SECRET,
-// };
+
+
 
 module.export=passport;
