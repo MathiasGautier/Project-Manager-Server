@@ -46,3 +46,5 @@ app.use('/todo', todoRouter);
 app.listen(process.env.PORT, () => {
   console.log('express server started 👌');
 });
+
+module.exports = app;
