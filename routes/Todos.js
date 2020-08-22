@@ -9,6 +9,8 @@ const SubTodo = require('../models/SubTodo');
 const Comment = require('../models/Comment');
 require("dotenv").config();
 
+
+
 //GET ALL THE TODOS
 todoRouter.get("/todos", passport.authenticate("jwt", {
         session: false

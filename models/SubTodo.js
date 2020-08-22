@@ -21,6 +21,7 @@ const SubTodoSchema = new mongoose.Schema({
     workers :[{
         type: mongoose.Schema.Types.ObjectId,
         ref:"User",
+        required : true
     }]
 });
 
