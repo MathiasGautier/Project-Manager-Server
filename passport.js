@@ -13,15 +13,10 @@ const cookieExtractor = req =>{
     return token
 }
 
-// const jwtOptions = {
-//     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
-//     secretOrKey: process.env.JWT_SECRET,
-// };
-
 
 // authorization
 passport.use(new JwtStrategy({
-    jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest : ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
     secretOrKey: process.env.JWT_SECRET,
 },(payload, done)=>{
     User.findById({_id : payload.sub},(err,user)=>{
