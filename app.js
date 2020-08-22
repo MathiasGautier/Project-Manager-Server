@@ -7,25 +7,33 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require("cors");
 
-// app.use(
-//     cors({
-//       origin : process.env.FRONTEND_URL,
-//       credentials:true,
-//     })
-//   )
+app.use(
+    cors({
+      origin : process.env.FRONTEND_URL,
+      credentials:true,
+    })
+  )
 
-const corsOptions = { origin: process.env.FRONTEND_URL, credentials: true };
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: process.env.FRONTEND_URL,
+//   credentials: true
+// };
+// app.use(cors(corsOptions));
 
-app.use(logger("dev")); 
-app.use(express.urlencoded({ extended: false }));
+app.use(logger("dev"));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 
-mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser:true,  useUnifiedTopology: true}, ()=>{
-    console.log('successfully connected to database👀');
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}, () => {
+  console.log('successfully connected to database👀');
 });
 
 const userRouter = require('./routes/User');
@@ -35,6 +43,6 @@ const todoRouter = require('./routes/Todos');
 app.use('/todo', todoRouter);
 
 
-app.listen(process.env.PORT, ()=>{
-    console.log('express server started 👌');
+app.listen(process.env.PORT, () => {
+  console.log('express server started 👌');
 });
