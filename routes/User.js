@@ -7,6 +7,7 @@ const User = require("../models/User");
 const Todo = require("../models/Todo");
 require("dotenv").config();
 
+
 const signToken = (userID) => {
     return JWT.sign({
             iss: "Math",
@@ -91,8 +92,8 @@ userRouter.post("/login", passport.authenticate("local", {
                     username,
                     role
                 }
-            });
-        }
+            })
+        }(req,res,next)
     }
 );
 
