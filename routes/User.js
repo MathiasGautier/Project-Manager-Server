@@ -93,7 +93,7 @@ userRouter.post("/login", passport.authenticate("local", {
                     role
                 }
             })
-        }(req,res,next)
+        }
     }
 );
 
