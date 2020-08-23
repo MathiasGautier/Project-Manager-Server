@@ -142,7 +142,6 @@ userRouter.get("/authenticated", passport.authenticate("jwt", {
         const {
             username,
             role,
-            _id
         } = req.user;
         res.status(200).json({
             
@@ -150,7 +149,6 @@ userRouter.get("/authenticated", passport.authenticate("jwt", {
             user: {
                 username,
                 role,
-                _id
             }
         });
     });
