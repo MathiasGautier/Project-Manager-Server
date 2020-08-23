@@ -5,7 +5,6 @@ const path = require("path");
 const logger = require("morgan");
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser')
 const cors = require("cors");
 
 app.use(
