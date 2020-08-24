@@ -1,7 +1,5 @@
 const express = require("express");
 const userRouter = express.Router();
-const passport = require("passport");
-const passportConfig = require("../passport");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
@@ -30,18 +28,22 @@ userRouter.post("/register", (req, res) => {
             password: hashedPassword,
         }
         User.create(newUser)
-        .then((user) => {
-                        const userObj = user.toObject();
-                        delete userObj.password;
-                        req.session.user = userObj;
-                        res.status(200).json(userObj)
-                   
-                    })
-            
+            .then((user) => {
+                const userObj = user.toObject();
+                delete userObj.password;
+                req.session.user = userObj;
+                res.status(200).json(userObj)
+
+            })
+
             .catch((error) => {
                 console.log("ici", error), res.status(500).json(error)
             })
-    }).catch((error)=>{res,status(500).json, console.log(error)})
+    }).catch((error) => {
+        res,
+        status(500).json,
+        console.log(error)
+    })
 })
 
 
@@ -133,7 +135,17 @@ userRouter.get('/users',
                 res.status(500).json(error);
             })
     }
-)
+);
+
+userRouter.get("/logout", (req, res, next) => {
+  req.session.destroy(function (error) {
+    if (error) res.status(500).json(error);
+    else
+      res.status(200).json({
+        message: "Succesfully disconnected.",
+      });
+  });
+});
 
 
 module.exports = userRouter;
