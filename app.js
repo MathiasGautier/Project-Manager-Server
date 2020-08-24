@@ -38,7 +38,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // }, () => {
 //   console.log('successfully connected to database👀');
 // });
-app.set('trust proxy', 1) 
+
 app.use(
   session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
