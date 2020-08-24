@@ -45,10 +45,9 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie : {
-    sameSite: 'none', 
-    maxAge: 86400000,
-    secure:true,
-    sameSite:'none'
+    sameSite: false,
+    secure:false,
+    httpOnly: true
   }
   })
 );
