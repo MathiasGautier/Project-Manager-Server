@@ -43,6 +43,7 @@ app.use(
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     secret: process.env.SESSION_SECRET,
     resave: true,
+    cookie: { maxAge: 60000 },
     saveUninitialized: true,
   })
 );
