@@ -38,15 +38,18 @@ app.use(express.static(path.join(__dirname, "public")));
 // }, () => {
 //   console.log('successfully connected to database👀');
 // });
+app.set('trust proxy', 1) 
 app.use(
   session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     secret: process.env.SESSION_SECRET,
     resave: true,
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 60000, secure: true },
     saveUninitialized: true,
   })
 );
+
+
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = process.env.MONGODB_URI;
@@ -59,6 +62,12 @@ client.connect(err => {
   // perform actions on the collection object
   client.close();
 });
+
+
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+}
 
 const userRouter = require('./routes/User');
 app.use('/user', userRouter);

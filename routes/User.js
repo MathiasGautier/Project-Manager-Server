@@ -67,7 +67,6 @@ userRouter.post("/login", (req, res, next) => {
                 userDocument.password
             );
             if (!isValidPassword) {
-                console.log("password")
                 return res.status(400).json({
                     message: "Invalid credentials",
                 });
