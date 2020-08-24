@@ -58,6 +58,7 @@ todoRouter.patch("/:id",
 
 todoRouter.post("/todo",
     (req, res) => {
+        console.log("req.session", req.session._id)
         const creator = req.session.user._id;
         const {
             name,

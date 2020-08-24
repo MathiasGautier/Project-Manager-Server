@@ -24,11 +24,11 @@ app.use(
 // app.use(cors(corsOptions));
 
 app.use(logger("dev"));
+app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
-app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 
@@ -44,8 +44,6 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie : {
-    sameSite: 'none', secure:true}
   })
 );
 
