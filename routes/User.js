@@ -2,123 +2,86 @@ const express = require("express");
 const userRouter = express.Router();
 const passport = require("passport");
 const passportConfig = require("../passport");
+const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
 const Todo = require("../models/Todo");
 require("dotenv").config();
 
 
-const signToken = (userID) => {
-    return JWT.sign({
-            iss: "Math",
-            sub: userID,
-        },
-        process.env.JWT_SECRET, {
-            expiresIn: "1h"
-        }
-    )
-};
+const salt = 10;
 
 userRouter.post("/register", (req, res) => {
     const {
         username,
-        password,
-        role
+        password
     } = req.body;
     User.findOne({
-        username
-    }, (err, user) => {
-        if (err)
-            res
-            .status(500)
-            .json({
-                message: {
-                    msgBody: "Error has occured",
-                    msgError: true
-                }
-            });
-        if (user)
-            res.status(400).json({
-                message: {
-                    msgBody: "Username is already taken",
-                    msgError: true
-                },
-            });
-        else {
-            const newUser = new User({
-                username,
-                password,
-                role
-            });
-            newUser.save((err) => {
-                if (err)
-                    res.status(500).json({
-                        message: {
-                            msgBody: "Error has occured",
-                            msgError: true
-                        },
-                    });
-                else
-                    res.status(201).json({
-                        message: {
-                            msgBody: "Account successfully created",
-                            msgError: false,
-                        },
-                    });
+        username,
+    }).then((userDocument) => {
+        if (userDocument) {
+            return res.status(400).json({
+                message: "Username already taken",
             });
         }
-    });
+        const hashedPassword = bcrypt.hashSync(password, salt);
+        const newUser = {
+            username,
+            password: hashedPassword,
+        }
+        User.create(newUser)
+        .then((user) => {
+                        const userObj = user.toObject();
+                        delete userObj.password;
+                        req.session.user = userObj;
+                        res.status(200).json(userObj)
+                   
+                    })
+            
+            .catch((error) => {
+                console.log("ici", error), res.status(500).json(error)
+            })
+    }).catch((error)=>{res,status(500).json, console.log(error)})
+})
+
+
+
+userRouter.post("/login", (req, res, next) => {
+    const {
+        username,
+        password,
+    } = req.body;
+    User.findOne({
+            username,
+        })
+        .then((userDocument) => {
+            if (!userDocument) {
+                return res.status(400).json({
+                    message: "Invalid credentials"
+                });
+            }
+            const isValidPassword = bcrypt.compareSync(
+                password,
+                userDocument.password
+            );
+            if (!isValidPassword) {
+                console.log("password")
+                return res.status(400).json({
+                    message: "Invalid credentials",
+                });
+            }
+            const userObj = userDocument.toObject();
+            delete userObj.password;
+            console.log(userObj)
+            req.session.user = userObj;
+            res.status(200).json(userObj);
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 });
 
-userRouter.post("/login", passport.authenticate("local", {
-        session: false
-    }),
-    (req, res) => {
-        if (req.isAuthenticated()) {
-            const {
-                _id,
-                username,
-                role
-            } = req.user;
-            const token = signToken(_id);
-            res.cookie("access_token", token, {
-                httpOnly: true,
-                sameSite: true
-            });
-            res.status(200).json({
-                isAuthenticated: true,
-                user: {
-                    _id,
-                    username,
-                    role
-                }
-            })
-        }
-    }
-);
-
-userRouter.get("/logout", passport.authenticate("jwt", {
-        session: false
-    }),
-    (req, res) => {
-        res.clearCookie('access_token');
-        res.json({
-            user: {
-                username: "",
-                role: ""
-            },
-            success: true
-        });
-    });
-
-
-
-
-
-
-userRouter.get("/admin", passport.authenticate("jwt", {
-        session: false
-    }),
+userRouter.get("/admin",
     (req, res) => {
         if (req.user.role === 'admin') {
             res.status(200).json({
@@ -136,39 +99,41 @@ userRouter.get("/admin", passport.authenticate("jwt", {
             })
     });
 
-userRouter.get("/authenticated", passport.authenticate("jwt", {
-        session: false
-    }),
+userRouter.get("/authenticated",
     (req, res) => {
-        const {
-            username,
-            role,
-        } = req.user;
-        res.status(200).json({
-            
-            isAuthenticated: true,
-            user: {
+        if (req.session.user) {
+            const {
                 username,
                 role,
-            }
-        });
+                _id
+            } = req.session.user;
+            res.status(200).json({
+                isAuthenticated: true,
+                user: {
+                    username,
+                    role,
+                    _id
+                }
+            });
+        } else {
+            res.status(401).json({
+                message: "Unauthorized"
+            })
+        }
     });
 
-    userRouter.get('/users', passport.authenticate
-    ("jwt",{
-        session : false
-    }),
-    (req, res) =>{
+userRouter.get('/users',
+    (req, res) => {
         User
-        .find()
-        .then((userDocument)=>{
-            res.status(200).json(userDocument);
-        })
-        .catch((error)=>{
-            res.status(500).json(error);
-        })
+            .find()
+            .then((userDocument) => {
+                res.status(200).json(userDocument);
+            })
+            .catch((error) => {
+                res.status(500).json(error);
+            })
     }
-    )
+)
 
 
 module.exports = userRouter;

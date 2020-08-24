@@ -12,9 +12,7 @@ require("dotenv").config();
 
 
 //GET ALL THE TODOS
-todoRouter.get("/todos", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/todos",
     (req, res, next) => {
         Todo
             .find()
@@ -29,9 +27,7 @@ todoRouter.get("/todos", passport.authenticate("jwt", {
 
 
 //GET ONE TODO   
-todoRouter.get("/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/:id",
     (req, res) => {
         Todo
             .findById(req.params.id)
@@ -47,9 +43,7 @@ todoRouter.get("/:id", passport.authenticate("jwt", {
     })
 
 //UPDATE ONE TODO   
-todoRouter.patch("/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.patch("/:id",
     (req, res) => {
         Todo
             .findByIdAndUpdate(
@@ -65,11 +59,9 @@ todoRouter.patch("/:id", passport.authenticate("jwt", {
     })
 //CREATE ONE TODO
 
-todoRouter.post("/todo", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.post("/todo",
     (req, res) => {
-        const creator = req.user._id;
+        const creator = req.session.user._id;
         const {
             name,
             description
@@ -90,9 +82,7 @@ todoRouter.post("/todo", passport.authenticate("jwt", {
     });
 
 //DELETE A TODO   
-todoRouter.delete("/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/:id",
     (req, res) => {
         Todo
             .deleteOne({
@@ -110,9 +100,7 @@ todoRouter.delete("/:id", passport.authenticate("jwt", {
 
 
 //POST A SUBTODO
-todoRouter.post("/subTodo", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.post("/subTodo",
     (req, res) => {
         const {
             name,
@@ -138,9 +126,7 @@ todoRouter.post("/subTodo", passport.authenticate("jwt", {
 
 
 //GET ALL SUBTODOS
-todoRouter.get("/subTodos/all", passport.authenticate("jwt", {
-    session : false
-}),
+todoRouter.get("/subTodos/all",
 (req,res,next)=>{
     SubTodo
         .find()
@@ -156,9 +142,7 @@ todoRouter.get("/subTodos/all", passport.authenticate("jwt", {
 )
 
 // GET ONE SUBTODO   
-todoRouter.get("/subTodos/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/subTodos/:id",
     (req, res) => {
         SubTodo
             .findById(req.params.id)
@@ -173,9 +157,7 @@ todoRouter.get("/subTodos/:id", passport.authenticate("jwt", {
     });
 
 //UPDATE ONE SUBTODO
-todoRouter.patch("/subTodos/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.patch("/subTodos/:id",
     (req, res) => {
         SubTodo
             .findByIdAndUpdate(
@@ -191,9 +173,7 @@ todoRouter.patch("/subTodos/:id", passport.authenticate("jwt", {
     })
 
 //DELETE ONE SUBTODO
-todoRouter.delete("/subTodos/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/subTodos/:id",
     (req, res) => {
         SubTodo
             .deleteOne({
@@ -210,9 +190,7 @@ todoRouter.delete("/subTodos/:id", passport.authenticate("jwt", {
     })
 
 //DELETE SUBTODOS RELATED TO A PROJECT
-todoRouter.delete("/subTodos/project/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/subTodos/project/:id",
     (req, res) => {
         SubTodo
             .deleteMany({
@@ -229,11 +207,9 @@ todoRouter.delete("/subTodos/project/:id", passport.authenticate("jwt", {
     })    
 
 //POST A COMMENT    
-todoRouter.post("/comment", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.post("/comment",
     (req, res) => {
-        const userRef = req.user._id;
+        const userRef = req.session.user._id;
         const {
             text,
             subTodoParent_id,
@@ -256,9 +232,7 @@ todoRouter.post("/comment", passport.authenticate("jwt", {
     });
 
 //GET ALL COMMENTS    
-todoRouter.get("/comments/all", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/comments/all",
     (req, res) => {
         Comment
             .find()
@@ -272,9 +246,7 @@ todoRouter.get("/comments/all", passport.authenticate("jwt", {
     });
 
 //GET ONE COMMENT
-todoRouter.get("/comments/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/comments/:id", 
     (req, res) => {
         Comment
             .findById(req.params.id)
@@ -292,9 +264,7 @@ todoRouter.get("/comments/:id", passport.authenticate("jwt", {
     
 
 //DELETE A COMMENT   
-todoRouter.delete("/comments/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/comments/:id", 
     (req, res) => {
         Comment
             .deleteOne({
@@ -311,8 +281,7 @@ todoRouter.delete("/comments/:id", passport.authenticate("jwt", {
     })
 
 //DELETE COMMENTS RELATED TO A SUBTODO
-todoRouter.delete('/comments/subTodos/:id', passport.authenticate("jwt",{session : false
-}),
+todoRouter.delete('/comments/subTodos/:id',
 (req, res)=>{
     Comment
         .deleteMany({
@@ -329,8 +298,7 @@ todoRouter.delete('/comments/subTodos/:id', passport.authenticate("jwt",{session
 })
 
 //DELETE COMMENTS RELATED TO A PROJECT
-todoRouter.delete('/comments/todo/:id', passport.authenticate("jwt",{session : false
-}),
+todoRouter.delete('/comments/todo/:id',
 (req, res)=>{
     Comment
         .deleteMany({

@@ -1,11 +1,14 @@
 require("dotenv").config();
+require("./config/dbConnection");
 const express = require('express');
 const app = express();
 const path = require("path");
 const logger = require("morgan");
 const cookieParser = require('cookie-parser');
+const session = require("express-session");
 const mongoose = require('mongoose');
 const cors = require("cors");
+const MongoStore = require("connect-mongo")(session);
 
 app.use(
   cors({
@@ -29,12 +32,20 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}, () => {
-  console.log('successfully connected to database👀');
-});
+// mongoose.connect(process.env.MONGODB_URI, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// }, () => {
+//   console.log('successfully connected to database👀');
+// });
+app.use(
+  session({
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = process.env.MONGODB_URI;
