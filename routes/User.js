@@ -81,7 +81,6 @@ userRouter.post("/login", passport.authenticate("local", {
                 role
             } = req.user;
             const token = signToken(_id);
-            console.log("HEEEERE -------->", token)
             res.cookie("access_token", token, {
                 httpOnly: true,
                 sameSite: true

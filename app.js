@@ -8,11 +8,11 @@ const mongoose = require('mongoose');
 const cors = require("cors");
 
 app.use(
-    cors({
-      origin : process.env.FRONTEND_URL,
-      credentials:true,
-    })
-  )
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+)
 
 // const corsOptions = {
 //   origin: process.env.FRONTEND_URL,
@@ -34,6 +34,18 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true
 }, () => {
   console.log('successfully connected to database👀');
+});
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
 });
 
 const userRouter = require('./routes/User');
