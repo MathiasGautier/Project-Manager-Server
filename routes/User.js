@@ -71,7 +71,9 @@ userRouter.post("/login", (req, res, next) => {
                     message: "Invalid credentials",
                 });
             }
-            const userObj = userDocument.toObject();
+            const userObj = userDocument;
+            //.toObject();
+            console.log(userObj)
             delete userObj.password;
             console.log(userObj)
             req.session.user = userObj;
@@ -103,6 +105,7 @@ userRouter.get("/admin",
 userRouter.get("/authenticated",
     (req, res) => {
         if (req.session.user) {
+            console.log("laa", req.session.user)
             const {
                 username,
                 role,
