@@ -31,7 +31,7 @@ userRouter.post("/register", (req, res) => {
             .then((user) => {
                 const userObj = user.toObject();
                 delete userObj.password;
-                req.session.user = userObj;
+                req.session.currentUser = userObj;
                 res.status(200).json(userObj)
 
             })
@@ -71,12 +71,10 @@ userRouter.post("/login", (req, res, next) => {
                     message: "Invalid credentials",
                 });
             }
-            const userObj = userDocument;
-            //.toObject();
-            console.log(userObj)
+            const userObj = userDocument.toObject();
             delete userObj.password;
             console.log(userObj)
-            req.session.user = userObj;
+            req.session.currentUser = userObj;
             res.status(200).json(userObj);
         })
         .catch((error) => {
@@ -86,7 +84,7 @@ userRouter.post("/login", (req, res, next) => {
 
 userRouter.get("/admin",
     (req, res) => {
-        if (req.user.role === 'admin') {
+        if (req.currentUser.role === 'admin') {
             res.status(200).json({
                 message: {
                     msgBody: 'You are an admin',
@@ -104,13 +102,12 @@ userRouter.get("/admin",
 
 userRouter.get("/authenticated",
     (req, res) => {
-        if (req.session.user) {
-            console.log("laa", req.session.user)
+        if (req.session.currentUser) {
             const {
                 username,
                 role,
                 _id
-            } = req.session.user;
+            } = req.session.currentUser;
             res.status(200).json({
                 isAuthenticated: true,
                 user: {
@@ -119,6 +116,7 @@ userRouter.get("/authenticated",
                     _id
                 }
             });
+            console.log(req.session.currentUser)
         } else {
             res.status(401).json({
                 message: "Unauthorized"
