@@ -17,6 +17,7 @@ app.use(
   })
 )
 
+
 // const corsOptions = {
 //   origin: process.env.FRONTEND_URL,
 //   credentials: true
@@ -38,27 +39,29 @@ app.use(express.static(path.join(__dirname, "public")));
 // }, () => {
 //   console.log('successfully connected to database👀');
 // });
+
+
+
 app.use(
   session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: {secure: true, maxAge: 10000},
   })
 );
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+// const MongoClient = require('mongodb').MongoClient;
+// const uri = process.env.MONGODB_URI;
+// const client = new MongoClient(uri, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   client.close();
+// });
 
 const userRouter = require('./routes/User');
 app.use('/user', userRouter);
