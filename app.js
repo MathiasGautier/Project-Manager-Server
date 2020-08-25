@@ -17,7 +17,6 @@ app.use(
   })
 )
 
-
 // const corsOptions = {
 //   origin: process.env.FRONTEND_URL,
 //   credentials: true
@@ -33,12 +32,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 
-// mongoose.connect(process.env.MONGODB_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// }, () => {
-//   console.log('successfully connected to database👀');
-// });
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}, () => {
+  console.log('successfully connected to database👀');
+});
 
 
 
@@ -48,10 +47,10 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: {secure: true, maxAge: 10000},
+    cookie: {sameSite:"Lax"},
   })
 );
-
+console.log(session)
 // const MongoClient = require('mongodb').MongoClient;
 // const uri = process.env.MONGODB_URI;
 // const client = new MongoClient(uri, {
