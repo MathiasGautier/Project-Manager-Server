@@ -9,15 +9,18 @@ const session = require("express-session");
 const mongoose = require('mongoose');
 const cors = require("cors");
 const MongoStore = require("connect-mongo")(session);
-
+const dd_options = {
+  'response_code':true,
+  'tags':['app:manager-server']
+}
+const connect_datadog=require('connect-datadog')(dd_options);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 )
-
-
+app.use(connect_datadog);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -25,11 +28,6 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-
-
-
-
 app.use(
   session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
@@ -38,16 +36,11 @@ app.use(
     saveUninitialized: true,
   })
 );
-
 const userRouter = require('./routes/User');
 app.use('/user', userRouter);
-
 const todoRouter = require('./routes/Todos');
 app.use('/todo', todoRouter);
-
-
 app.listen(process.env.PORT, () => {
   console.log('express server started 👌');
 });
-
 module.exports = app;
