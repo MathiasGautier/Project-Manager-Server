@@ -31,7 +31,7 @@ userRouter.post("/register", (req, res) => {
             .then((user) => {
                 const userObj = user.toObject();
                 delete userObj.password;
-                req.session.currentUser = userObj;
+                req.session.user = userObj;
                 res.status(200).json(userObj)
 
             })
@@ -74,7 +74,7 @@ userRouter.post("/login", (req, res, next) => {
             const userObj = userDocument.toObject();
             delete userObj.password;
             console.log(userObj)
-            req.session.currentUser = userObj;
+            req.session.user = userObj;
             res.status(200).json(userObj);
         })
         .catch((error) => {
@@ -84,7 +84,7 @@ userRouter.post("/login", (req, res, next) => {
 
 userRouter.get("/admin",
     (req, res) => {
-        if (req.currentUser.role === 'admin') {
+        if (req.user.role === 'admin') {
             res.status(200).json({
                 message: {
                     msgBody: 'You are an admin',
@@ -102,12 +102,12 @@ userRouter.get("/admin",
 
 userRouter.get("/authenticated",
     (req, res) => {
-        if (req.session.currentUser) {
+        if (req.session.user) {
             const {
                 username,
                 role,
                 _id
-            } = req.session.currentUser;
+            } = req.session.user;
             res.status(200).json({
                 isAuthenticated: true,
                 user: {
@@ -116,7 +116,7 @@ userRouter.get("/authenticated",
                     _id
                 }
             });
-            console.log(req.session.currentUser)
+            console.log(req.session.user)
         } else {
             res.status(401).json({
                 message: "Unauthorized"
