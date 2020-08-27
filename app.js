@@ -9,6 +9,11 @@ const session = require("express-session");
 const mongoose = require('mongoose');
 const cors = require("cors");
 const MongoStore = require("connect-mongo")(session);
+const StatsD = require ('hot-shots');
+const dogstatsd = new StatsD();
+
+dogstatsd.increment('page.views')
+
 const dd_options = {
   'response_code':true,
   'tags':['app:manager-server']
