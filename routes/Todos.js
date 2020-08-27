@@ -5,6 +5,8 @@ const Todo = require("../models/Todo");
 const SubTodo = require('../models/SubTodo');
 const Comment = require('../models/Comment');
 require("dotenv").config();
+const StatsD = require ('hot-shots');
+const dogstatsd = new StatsD();
 
 
 
@@ -72,6 +74,7 @@ todoRouter.post("/todo",
         newTodo
             .save()
             .then((todoDocument) => {
+                dogstatsd.increment('app.project.posted')
                 res.status(201).json(todoDocument)
             })
             .catch((error) => {
@@ -222,6 +225,7 @@ todoRouter.post("/comment",
         newComment
             .save()
             .then((commentDocument) => {
+                dogstatsd.increment('app.comment.posted')
                 res.status(201).json(commentDocument)
             })
             .catch((error) => {

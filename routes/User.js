@@ -60,7 +60,7 @@ userRouter.post("/login", (req, res, next) => {
         })
         .then((userDocument) => {
             if (!userDocument) {
-                dogstatsd.increment('signin.fail')
+                dogstatsd.increment('app.signin.fail')
                 return res.status(400).json({
                     message: "Invalid credentials"
                 }
@@ -71,10 +71,12 @@ userRouter.post("/login", (req, res, next) => {
                 userDocument.password
             );
             if (!isValidPassword) {
+                dogstatsd.increment('app.signin.failed')
                 return res.status(400).json({
                     message: "Invalid credentials",
                 });
             }
+            dogstatsd.increment('app.signin.success')
             const userObj = userDocument.toObject();
             delete userObj.password;
             console.log(userObj)
