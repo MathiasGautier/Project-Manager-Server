@@ -5,6 +5,8 @@ const JWT = require("jsonwebtoken");
 const User = require("../models/User");
 const Todo = require("../models/Todo");
 require("dotenv").config();
+const StatsD = require ('hot-shots');
+const dogstatsd = new StatsD();
 
 
 const salt = 10;
@@ -58,9 +60,11 @@ userRouter.post("/login", (req, res, next) => {
         })
         .then((userDocument) => {
             if (!userDocument) {
+                dogstatsd.increment('signin.fail')
                 return res.status(400).json({
                     message: "Invalid credentials"
-                });
+                }
+                );
             }
             const isValidPassword = bcrypt.compareSync(
                 password,
