@@ -1,6 +1,8 @@
 require("dotenv").config();
 require("./config/dbConnection");
-const tracer = require("dd-trace").init();
+const tracer = require("dd-trace").init({
+  analytics:true, profiling:true
+});
 const express = require('express');
 const app = express();
 const path = require("path");
@@ -10,12 +12,9 @@ const session = require("express-session");
 const mongoose = require('mongoose');
 const cors = require("cors");
 const MongoStore = require("connect-mongo")(session);
-// const StatsD = require ('hot-shots');
-// const dogstatsd = new StatsD();
-
-// dogstatsd.increment('signin')
 
 
+ 
 const dd_options = {
   'response_code':true,
   'tags':['app:manager-server']
