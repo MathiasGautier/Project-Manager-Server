@@ -35,6 +35,7 @@ userRouter.post("/register", (req, res) => {
                 delete userObj.password;
                 req.session.user = userObj;
                 res.status(200).json(userObj)
+                dogstatsd.increment('app.new.user') // NOTIFY ME WHEN A NEW USER IS CREATED
 
             })
 
