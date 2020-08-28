@@ -1,8 +1,8 @@
+require("./my_app");
+require("./logger");
+
 require("dotenv").config();
 require("./config/dbConnection");
-const tracer = require("dd-trace").init({
-  analytics:true, profiling:true
-});
 const express = require('express');
 const app = express();
 const path = require("path");

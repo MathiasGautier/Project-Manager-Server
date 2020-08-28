@@ -6,6 +6,7 @@ const SubTodo = require('../models/SubTodo');
 const Comment = require('../models/Comment');
 require("dotenv").config();
 const StatsD = require ('hot-shots');
+const logger = require("../logger");
 const dogstatsd = new StatsD();
 
 
@@ -32,7 +33,6 @@ todoRouter.get("/:id",
             .findById(req.params.id)
             .populate('creator')
             .then((todoDocument) => {
-                console.log(todoDocument)
                 res.status(200).json(todoDocument);
             })
             .catch((error) => {
@@ -165,7 +165,12 @@ todoRouter.patch("/subTodos/:id",
                 req.params.id, req.body, {
                     new: true
                 })
+            .populate('todoParent_id')    
             .then((document) => {
+                if(document.status==="Done"){
+                    console.log(document)
+                    logger.info(`Task "${document.name}" in project "${document.todoParent_id.name}" marked as complete`)}
+
                 res.status(200).json(document)
             })
             .catch((error) => {

@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Todo = require("../models/Todo");
 require("dotenv").config();
 const StatsD = require ('hot-shots');
+const logger = require("../logger");
 const dogstatsd = new StatsD();
 
 
@@ -61,6 +62,7 @@ userRouter.post("/login", (req, res, next) => {
         })
         .then((userDocument) => {
             if (!userDocument) {
+                
                 dogstatsd.increment('app.signin.fail')
                 return res.status(400).json({
                     message: "Invalid credentials"
@@ -80,7 +82,8 @@ userRouter.post("/login", (req, res, next) => {
             dogstatsd.increment('app.signin.success')
             const userObj = userDocument.toObject();
             delete userObj.password;
-            console.log(userObj)
+            logger.info(userObj);
+            
             req.session.user = userObj;
             res.status(200).json(userObj);
         })
