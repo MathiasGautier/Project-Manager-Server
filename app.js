@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./config/dbConnection");
+const tracer = require("dd-trace").init();
 const express = require('express');
 const app = express();
 const path = require("path");
