@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
 const CommentSchema = new mongoose.Schema({
-    userRef:{
+    userRef: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref: "User"
     },
-    text :{
+    text: {
         type: String,
-        required:true
+        required: true
     },
     subTodoParent_id: {
-        type : mongoose.Schema.Types.ObjectId,
-        ref:"Subtodo"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Subtodo"
     },
     toDoRef: {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Todo"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Todo"
     }
 });
 

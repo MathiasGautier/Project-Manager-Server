@@ -1,20 +1,15 @@
 const express = require("express");
 const todoRouter = express.Router();
-const passport = require("passport");
-const passportConfig = require("../passport");
-const JWT = require("jsonwebtoken");
 const User = require("../models/User");
 const Todo = require("../models/Todo");
-const SubTodo = require('../models/SubTodo');
+const SubTodo = require('../models/Subtodo');
 const Comment = require('../models/Comment');
 require("dotenv").config();
 
 
 
 //GET ALL THE TODOS
-todoRouter.get("/todos", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/todos",
     (req, res, next) => {
         Todo
             .find()
@@ -29,15 +24,12 @@ todoRouter.get("/todos", passport.authenticate("jwt", {
 
 
 //GET ONE TODO   
-todoRouter.get("/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/:id",
     (req, res) => {
         Todo
             .findById(req.params.id)
             .populate('creator')
             .then((todoDocument) => {
-                console.log(todoDocument)
                 res.status(200).json(todoDocument);
             })
             .catch((error) => {
@@ -47,9 +39,7 @@ todoRouter.get("/:id", passport.authenticate("jwt", {
     })
 
 //UPDATE ONE TODO   
-todoRouter.patch("/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.patch("/:id",
     (req, res) => {
         Todo
             .findByIdAndUpdate(
@@ -65,11 +55,9 @@ todoRouter.patch("/:id", passport.authenticate("jwt", {
     })
 //CREATE ONE TODO
 
-todoRouter.post("/todo", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.post("/todo",
     (req, res) => {
-        const creator = req.user._id;
+        const creator = req.session.currentUser._id;
         const {
             name,
             description
@@ -90,9 +78,7 @@ todoRouter.post("/todo", passport.authenticate("jwt", {
     });
 
 //DELETE A TODO   
-todoRouter.delete("/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/:id",
     (req, res) => {
         Todo
             .deleteOne({
@@ -110,9 +96,7 @@ todoRouter.delete("/:id", passport.authenticate("jwt", {
 
 
 //POST A SUBTODO
-todoRouter.post("/subTodo", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.post("/subTodo",
     (req, res) => {
         const {
             name,
@@ -138,27 +122,23 @@ todoRouter.post("/subTodo", passport.authenticate("jwt", {
 
 
 //GET ALL SUBTODOS
-todoRouter.get("/subTodos/all", passport.authenticate("jwt", {
-    session : false
-}),
-(req,res,next)=>{
-    SubTodo
-        .find()
-        .populate('todoParent_id')
-        .populate('workers')
-        .then((subTodoDocument)=>{
-            res.status(200).json(subTodoDocument);
-        })
-        .catch((error)=>{
-            res.status(500).json(error)
-        })
-}
+todoRouter.get("/subTodos/all",
+    (req, res, next) => {
+        SubTodo
+            .find()
+            .populate('todoParent_id')
+            .populate('workers')
+            .then((subTodoDocument) => {
+                res.status(200).json(subTodoDocument);
+            })
+            .catch((error) => {
+                res.status(500).json(error)
+            })
+    }
 )
 
 // GET ONE SUBTODO   
-todoRouter.get("/subTodos/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/subTodos/:id",
     (req, res) => {
         SubTodo
             .findById(req.params.id)
@@ -173,15 +153,14 @@ todoRouter.get("/subTodos/:id", passport.authenticate("jwt", {
     });
 
 //UPDATE ONE SUBTODO
-todoRouter.patch("/subTodos/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.patch("/subTodos/:id",
     (req, res) => {
         SubTodo
             .findByIdAndUpdate(
                 req.params.id, req.body, {
                     new: true
                 })
+            .populate('todoParent_id')
             .then((document) => {
                 res.status(200).json(document)
             })
@@ -191,9 +170,7 @@ todoRouter.patch("/subTodos/:id", passport.authenticate("jwt", {
     })
 
 //DELETE ONE SUBTODO
-todoRouter.delete("/subTodos/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/subTodos/:id",
     (req, res) => {
         SubTodo
             .deleteOne({
@@ -210,13 +187,11 @@ todoRouter.delete("/subTodos/:id", passport.authenticate("jwt", {
     })
 
 //DELETE SUBTODOS RELATED TO A PROJECT
-todoRouter.delete("/subTodos/project/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/subTodos/project/:id",
     (req, res) => {
         SubTodo
             .deleteMany({
-                todoParent_id : req.params.id
+                todoParent_id: req.params.id
             }, {
                 new: true
             })
@@ -226,14 +201,12 @@ todoRouter.delete("/subTodos/project/:id", passport.authenticate("jwt", {
             .catch((error) => {
                 res.status(500).json(error)
             })
-    })    
+    })
 
 //POST A COMMENT    
-todoRouter.post("/comment", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.post("/comment",
     (req, res) => {
-        const userRef = req.user._id;
+        const userRef = req.session.currentUser._id;
         const {
             text,
             subTodoParent_id,
@@ -256,9 +229,7 @@ todoRouter.post("/comment", passport.authenticate("jwt", {
     });
 
 //GET ALL COMMENTS    
-todoRouter.get("/comments/all", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/comments/all",
     (req, res) => {
         Comment
             .find()
@@ -272,9 +243,7 @@ todoRouter.get("/comments/all", passport.authenticate("jwt", {
     });
 
 //GET ONE COMMENT
-todoRouter.get("/comments/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.get("/comments/:id",
     (req, res) => {
         Comment
             .findById(req.params.id)
@@ -289,12 +258,10 @@ todoRouter.get("/comments/:id", passport.authenticate("jwt", {
 
     })
 
-    
+
 
 //DELETE A COMMENT   
-todoRouter.delete("/comments/:id", passport.authenticate("jwt", {
-        session: false
-    }),
+todoRouter.delete("/comments/:id",
     (req, res) => {
         Comment
             .deleteOne({
@@ -311,39 +278,37 @@ todoRouter.delete("/comments/:id", passport.authenticate("jwt", {
     })
 
 //DELETE COMMENTS RELATED TO A SUBTODO
-todoRouter.delete('/comments/subTodos/:id', passport.authenticate("jwt",{session : false
-}),
-(req, res)=>{
-    Comment
-        .deleteMany({
-            subTodoParent_id : req.params.id
-        }, {
-            new : true
-        })
-        .then((document)=>{
-            res.status(200).json(document)
-        })
-        .catch((error)=>{
-            res.status(500).json(error)
-        })
-})
+todoRouter.delete('/comments/subTodos/:id',
+    (req, res) => {
+        Comment
+            .deleteMany({
+                subTodoParent_id: req.params.id
+            }, {
+                new: true
+            })
+            .then((document) => {
+                res.status(200).json(document)
+            })
+            .catch((error) => {
+                res.status(500).json(error)
+            })
+    })
 
 //DELETE COMMENTS RELATED TO A PROJECT
-todoRouter.delete('/comments/todo/:id', passport.authenticate("jwt",{session : false
-}),
-(req, res)=>{
-    Comment
-        .deleteMany({
-            toDoRef : req.params.id
-        }, {
-            new : true
-        })
-        .then((document)=>{
-            res.status(200).json(document)
-        })
-        .catch((error)=>{
-            res.status(500).json(error)
-        })
-})
+todoRouter.delete('/comments/todo/:id',
+    (req, res) => {
+        Comment
+            .deleteMany({
+                toDoRef: req.params.id
+            }, {
+                new: true
+            })
+            .then((document) => {
+                res.status(200).json(document)
+            })
+            .catch((error) => {
+                res.status(500).json(error)
+            })
+    })
 
 module.exports = todoRouter;

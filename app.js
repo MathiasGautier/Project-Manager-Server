@@ -1,62 +1,70 @@
 require("dotenv").config();
-const express = require('express');
-const app = express();
+require("./config/dbConnection");
+
+const express = require("express");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
+const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
+const mongoose = require("mongoose");
+const app = express();
 const cors = require("cors");
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  })
-)
-
-// const corsOptions = {
-//   origin: process.env.FRONTEND_URL,
-//   credentials: true
-// };
-// app.use(cors(corsOptions));
-
-app.use(logger("dev"));
-app.use(express.urlencoded({
-  extended: false
-}));
+/**
+ * Middlewares
+ */
+const corsOptions = { origin: process.env.FRONTEND_URL, credentials: true };
+app.use(cors(corsOptions));
+app.use(logger("dev")); // This logs HTTP reponses in the console.
+app.use(express.json()); // Access data sent as json @req.body
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    store: new MongoStore({ mongooseConnection: mongoose.connection }), // Persist session in database.
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
-
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}, () => {
-  console.log('successfully connected to database👀');
+// Test to see if user is logged In before getting into any router.
+app.use(function (req, res, next) {
+  //console.log(req.session.currentUser)
+  next();
 });
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+/**
+ * Routes
+ */
 
+// const indexRouter = require("./routes/index");
 const userRouter = require('./routes/User');
-app.use('/user', userRouter);
-
 const todoRouter = require('./routes/Todos');
+
+// app.use("/", indexRouter);
+app.use('/user', userRouter);
 app.use('/todo', todoRouter);
 
+// 404 Middleware
+app.use((req, res, next) => {
+  const error = new Error("Ressource not found.");
+  error.status = 404;
+  next(err);
+});
 
-app.listen(process.env.PORT, () => {
-  console.log('express server started 👌');
+// Error handler middleware
+// If you pass an argument to your next function in any of your routes or middlewares
+// You will end up in this middleware
+// next("toto") makes you end up here
+app.use((err, req, res, next) => {
+  console.log("An error occured");
+  res.status(err.status || 500);
+  if (!res.headersSent) {
+    res.json(err);
+  }
 });
 
 module.exports = app;
