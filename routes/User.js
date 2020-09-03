@@ -5,6 +5,10 @@ const User = require("../models/User");
 
 const salt = 10;
 
+userRouter.get("/getUser", (req, res)=>{
+  res.json(req.session.currentUser);
+})
+
 userRouter.post("/login", (req, res, next) => {
   const {
     username,
@@ -27,6 +31,7 @@ userRouter.post("/login", (req, res, next) => {
     const userObj = userDocument.toObject();
     delete userObj.password;
     req.session.currentUser = userObj;
+
     res.status(200).json(userObj);
   });
 });
