@@ -26,8 +26,8 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(
-  session({
+
+const sessionConfig={
     store: new MongoStore({
       mongooseConnection: mongoose.connection
     }), // Persist session in database.
@@ -35,10 +35,17 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      sameSite: 'none', secure: true
+      sameSite: 'none'
     }
-  })
-);
+  };
+
+  
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // trust first proxy
+  sessionConfig.cookie.secure = true; // serve secure cookies
+}
+
+app.use(session(sessionConfig));
 
 // Test to see if user is logged In before getting into any router.
 app.use(function (req, res, next) {
