@@ -27,7 +27,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
- cookie : {secure:true}
+ cookie : {secure:true, sameSIte:"none"}
   })
 );
 
