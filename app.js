@@ -14,20 +14,30 @@ const cors = require("cors");
 /**
  * Middlewares
  */
-const corsOptions = { origin: process.env.FRONTEND_URL, credentials: true };
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+};
 app.use(cors(corsOptions));
 app.use(logger("dev")); // This logs HTTP reponses in the console.
 app.use(express.json()); // Access data sent as json @req.body
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    store: new MongoStore({ mongooseConnection: mongoose.connection }), // Persist session in database.
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection
+    }), // Persist session in database.
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
- cookie : {secure:true, sameSite:"none"}
+    cookie: {
+      secure: true,
+      sameSite: "none"
+    }
   })
 );
 
