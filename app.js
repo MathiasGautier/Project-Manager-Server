@@ -37,9 +37,15 @@ const sessionConfig={
     resave: true,
     saveUninitialized: true,
     cookie: {
-      sameSite: 'none', secure:true
+      sameSite: 'none', secure:false
     }
   };
+
+  
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // trust first proxy
+  sessionConfig.cookie.secure = true; // serve secure cookies
+}
 
 app.use(session(sessionConfig));
 
