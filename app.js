@@ -41,9 +41,6 @@ const sessionConfig={
     }
   };
 
-  
-
-
 app.use(session(sessionConfig));
 
 // Test to see if user is logged In before getting into any router.
