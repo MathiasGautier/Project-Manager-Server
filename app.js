@@ -27,7 +27,8 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.set('trust proxy', 1);
+process.env.NODE_ENV==='production' && app.set('trust proxy', 1);
+
 
 const sessionConfig={
     store: new MongoStore({
@@ -36,8 +37,9 @@ const sessionConfig={
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: {
-      sameSite: 'none', secure:true
+    cookie:{
+      sameSite: process.env.NODE_ENV==='production' ? "none":true ,
+      secure:process.env.NODE_ENV==='production' ? true:false
     }
   };
 app.use(session(sessionConfig));
