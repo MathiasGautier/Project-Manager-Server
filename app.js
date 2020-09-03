@@ -27,6 +27,7 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.set('trust proxy', 1);
 
 const sessionConfig={
     store: new MongoStore({
@@ -36,15 +37,9 @@ const sessionConfig={
     resave: true,
     saveUninitialized: true,
     cookie: {
-      sameSite: 'none', secure:false
+      sameSite: 'none', secure:true
     }
   };
-
-if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1); // trust first proxy
-  sessionConfig.cookie.secure = true; // serve secure cookies
-}
-
 app.use(session(sessionConfig));
 
 // Test to see if user is logged In before getting into any router.
