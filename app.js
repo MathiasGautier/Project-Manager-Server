@@ -14,11 +14,13 @@ const cors = require("cors");
 /**
  * Middlewares
  */
-const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  credentials: true
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: process.env.FRONTEND_URL,
+//   credentials: true
+// };
+// app.use(cors(corsOptions));
+app.use(cors());
+
 app.use(logger("dev")); // This logs HTTP reponses in the console.
 app.use(express.json()); // Access data sent as json @req.body
 app.use(express.urlencoded({
@@ -47,6 +49,10 @@ app.use(session(sessionConfig));
 // Test to see if user is logged In before getting into any router.
 app.use(function (req, res, next) {
   //console.log(req.session.currentUser)
+  // res.append('Access-Control-Allow-Origin', ['http://localhost:3000']);
+  // res.append('Access-Control-Allow-Credentials', true);
+  // res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  // res.append('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   next();
 });
 

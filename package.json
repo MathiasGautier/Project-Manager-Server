@@ -7,7 +7,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^4.0.1",
+    "bcryptjs": "^2.4.3",
     "bl": "^1.2.3",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "~1.4.4",
@@ -16,8 +16,14 @@
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "express-session": "^1.17.1",
+    "http": "^0.0.1-security",
     "mongoose": "^5.9.13",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "serverless": "^2.18.0",
+    "serverless-http": "^2.6.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^6.8.0"
   }
 }

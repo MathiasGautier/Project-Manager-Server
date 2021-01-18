@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 if (!process.env.MONGODB_URI) {
   throw "Cannot read MONGODB_URI, the uri seems to be undefined, have you set the environment variables ?";
 }
